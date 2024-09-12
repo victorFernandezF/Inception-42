@@ -1,11 +1,13 @@
 FROM debian:bullseye
 
-RUN apt-get update -y && apt-get install mariadb-server -y
+RUN apt-get update -y && apt-get install -y mariadb-server
 
-COPY ./conf/mysqld.conf /etc/mysql/mariadb.conf.d/
+COPY ./tools/script.sh /
+COPY ./tools/.env /.env
+COPY ./conf/my.cnf /etc/mysql/my.cnf
 
-# Ensure directories exist and have the correct permissions
-RUN mkdir -p /var/run/mysqld && chown mysql:mysql /var/run/mysqld
+RUN chmod +x script.sh
 
-# Start MariaDB directly using the mysqld command
-CMD ["mysqld"]
+EXPOSE 3306
+
+CMD ["/script.sh"]
